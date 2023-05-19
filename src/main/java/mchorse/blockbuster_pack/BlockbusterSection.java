@@ -54,7 +54,7 @@ public class BlockbusterSection extends MorphSection
         SnowstormMorph snow = new SnowstormMorph();
         SequencerMorph sequencer = new SequencerMorph();
 
-        image.texture = RLUtils.create("blockbuster", "textures/gui/icon.png");
+        image.texture = RLUtils.create("b.a:image/skins/default.png");
         snow.setScheme("default_rain");
 
         this.extra.add(image);

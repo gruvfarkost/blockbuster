@@ -41,6 +41,7 @@ import mchorse.blockbuster_pack.trackers.TrackerRegistry;
 import mchorse.mclib.McLib;
 import mchorse.mclib.utils.files.FileTree;
 import mchorse.mclib.utils.files.GlobalTree;
+import mchorse.mclib.utils.resources.RLUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
@@ -53,6 +54,7 @@ import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourcePack;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
@@ -66,7 +68,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 
@@ -145,6 +150,19 @@ public class ClientProxy extends CommonProxy
         audio = new AudioLibrary(new File(CommonProxy.configFile, "audio"));
         skinsFolder = new File(configFile, "skins");
         skinsFolder.mkdirs();
+
+        ResourceLocation blockbusterIcon = RLUtils.create("blockbuster", "textures/gui/icon.png");
+        File skinsDirectory = new File(configFile, "models/image/skins");
+        File targetFile = new File(skinsDirectory, "default.png");
+
+        if (!targetFile.exists()) {
+            try {
+                InputStream originalStream = Minecraft.getMinecraft().getResourceManager().getResource(blockbusterIcon).getInputStream();
+                Files.copy(originalStream, targetFile.toPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
