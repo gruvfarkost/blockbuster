@@ -147,13 +147,15 @@ public class Model
         {
             if (!data.poses.containsKey(key))
             {
-                throw new Exception(I18n.format("blockbuster.parsing.lacks_pose", data.name, key));
+                //throw new Exception(I18n.format("blockbuster.parsing.lacks_pose", data.name, key));
+                throw new Exception("Error parsing model " + data.name + ": missing pose " + key);
             }
         }
 
         if (data.limbs.isEmpty())
         {
-            throw new Exception(I18n.format("blockbuster.parsing.lacks_limbs", data.name));
+            //throw new Exception(I18n.format("blockbuster.parsing.lacks_limbs", data.name));
+            throw new Exception("Error parsing model " + data.name + ": missing limbs");
         }
 
         data.fillInMissing();
