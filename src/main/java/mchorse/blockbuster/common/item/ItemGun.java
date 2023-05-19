@@ -424,6 +424,12 @@ public class ItemGun extends Item
             props.state = GunState.NEED_TO_BE_RELOAD;
         }
 
+        //this check fixes that the name of the gun appears on the screen when you shoot (only if you don't have ammo)
+        if (props.ammoStack.isEmpty())
+        {
+            return;
+        }
+
         NBTUtils.saveGunProps(player.getHeldItemMainhand(), props.toNBT());
 
         if (!player.world.isRemote)
