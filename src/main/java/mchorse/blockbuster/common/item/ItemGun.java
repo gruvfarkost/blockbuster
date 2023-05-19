@@ -286,6 +286,12 @@ public class ItemGun extends Item
             return false;
         }
 
+        //this check prevents the gun from shooting if it does not have a projectile morph
+        if (props.projectileMorph == null)
+        {
+            return false;
+        }
+
         /* Launch the player is enabled */
         if (props.launch)
         {
