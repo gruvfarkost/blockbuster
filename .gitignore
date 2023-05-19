@@ -27,3 +27,4 @@ src/main/resources/*.md
 # PHP
 php/vendor
 php/composer.lock
+/classes/production/

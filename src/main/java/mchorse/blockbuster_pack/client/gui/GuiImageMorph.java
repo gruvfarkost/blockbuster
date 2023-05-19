@@ -118,6 +118,7 @@ public class GuiImageMorph extends GuiAbstractMorph<ImageMorph>
         public GuiTrackpadElement offsetY;
         public GuiTrackpadElement rotation;
         public GuiToggleElement keying;
+        public GuiToggleElement thickness;
         public GuiToggleElement shadow;
 
         public GuiAnimation animation;
@@ -188,6 +189,8 @@ public class GuiImageMorph extends GuiAbstractMorph<ImageMorph>
             this.rotation.tooltip(IKey.lang("blockbuster.gui.image.rotation"));
             this.keying = new GuiToggleElement(mc, IKey.lang("blockbuster.gui.image.keying"), false, (b) -> this.morph.keying = b.isToggled());
             this.keying.tooltip(IKey.lang("blockbuster.gui.image.keying_tooltip"), Direction.TOP);
+            this.thickness = new GuiToggleElement(mc, IKey.lang("blockbuster.gui.image.thickness"), false, (b) -> this.morph.thickness = b.isToggled());
+            this.thickness.tooltip(IKey.lang("blockbuster.gui.image.thickness_tooltip"), Direction.TOP);
             this.shadow = new GuiToggleElement(mc, IKey.lang("blockbuster.gui.image.shadow"), false, (b) -> this.morph.shadow = b.isToggled());
             this.shadow.tooltip(IKey.lang("blockbuster.gui.image.shadow_tooltip"), Direction.TOP);
 
@@ -198,7 +201,7 @@ public class GuiImageMorph extends GuiAbstractMorph<ImageMorph>
             column.scroll.opposite = true;
             column.flex().relative(this).w(150).h(1F).column(5).vertical().stretch().scroll().height(20).padding(10);
             column.add(this.texture, this.scale, this.shaded, this.lighting, this.billboard, this.removeParentScaleRotation, this.facingModeLabel, this.facingMode, Elements.label(IKey.lang("blockbuster.gui.image.crop")));
-            column.add(this.left, this.right, this.top, this.bottom, this.resizeCrop, this.color, this.offsetX, this.offsetY, this.rotation, this.keying, this.shadow);
+            column.add(this.left, this.right, this.top, this.bottom, this.resizeCrop, this.color, this.offsetX, this.offsetY, this.rotation, this.keying, this.thickness, this.shadow);
 
             this.animation = new GuiAnimation(mc, true);
             this.animation.flex().relative(this).x(1F, -130).w(130);
@@ -230,6 +233,7 @@ public class GuiImageMorph extends GuiAbstractMorph<ImageMorph>
             this.offsetX.setValue(morph.offsetX);
             this.offsetY.setValue(morph.offsetY);
             this.keying.toggled(morph.keying);
+            this.thickness.toggled(morph.thickness);
             this.shadow.toggled(morph.shadow);
 
             this.animation.fill(morph.animation);

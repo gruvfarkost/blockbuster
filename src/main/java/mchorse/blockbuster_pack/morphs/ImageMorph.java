@@ -117,6 +117,11 @@ public class ImageMorph extends AbstractMorph implements IAnimationProvider, ISy
     public boolean keying;
 
     /**
+     * Weather it should have 3d effect (thickness)
+     */
+    public boolean thickness;
+
+    /**
      * Whether Optifine's shadow should be disabled
      */
     public boolean shadow = true;
@@ -403,17 +408,23 @@ public class ImageMorph extends AbstractMorph implements IAnimationProvider, ISy
 
         /* By default the pos is (0.5, -0.5, -0.5, 0.5)  */
 
-        /* Frontface */
-        buffer.pos(pos.x, pos.z, 0.0F).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.z).normal(0.0F, 0.0F, 1.0F).endVertex();
-        buffer.pos(pos.x, pos.w, 0.0F).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.w).normal(0.0F, 0.0F, 1.0F).endVertex();
-        buffer.pos(pos.y, pos.w, 0.0F).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.w).normal(0.0F, 0.0F, 1.0F).endVertex();
-        buffer.pos(pos.y, pos.z, 0.0F).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.z).normal(0.0F, 0.0F, 1.0F).endVertex();
+        if (!this.thickness) {
+            /* Frontface */
+            buffer.pos(pos.x, pos.z, 0.0F).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.z).normal(0.0F, 0.0F, 1.0F).endVertex();
+            buffer.pos(pos.x, pos.w, 0.0F).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.w).normal(0.0F, 0.0F, 1.0F).endVertex();
+            buffer.pos(pos.y, pos.w, 0.0F).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.w).normal(0.0F, 0.0F, 1.0F).endVertex();
+            buffer.pos(pos.y, pos.z, 0.0F).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.z).normal(0.0F, 0.0F, 1.0F).endVertex();
 
-        /* Backface */
-        buffer.pos(pos.x, pos.z, 0.0F).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.z).normal(0.0F, 0.0F, -1.0F).endVertex();
-        buffer.pos(pos.y, pos.z, 0.0F).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.z).normal(0.0F, 0.0F, -1.0F).endVertex();
-        buffer.pos(pos.y, pos.w, 0.0F).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.w).normal(0.0F, 0.0F, -1.0F).endVertex();
-        buffer.pos(pos.x, pos.w, 0.0F).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.w).normal(0.0F, 0.0F, -1.0F).endVertex();
+            /* Backface */
+            buffer.pos(pos.x, pos.z, 0.0F).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.z).normal(0.0F, 0.0F, -1.0F).endVertex();
+            buffer.pos(pos.y, pos.z, 0.0F).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.z).normal(0.0F, 0.0F, -1.0F).endVertex();
+            buffer.pos(pos.y, pos.w, 0.0F).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.w).normal(0.0F, 0.0F, -1.0F).endVertex();
+            buffer.pos(pos.x, pos.w, 0.0F).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.w).normal(0.0F, 0.0F, -1.0F).endVertex();
+        }
+        else
+        {
+            bufferVertexAllSides(buffer, color, 0.5F);
+        }
 
         tessellator.draw();
 
@@ -442,6 +453,45 @@ public class ImageMorph extends AbstractMorph implements IAnimationProvider, ISy
         GlStateManager.disableBlend();
         GlStateManager.disableAlpha();
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+    }
+
+    private void bufferVertexAllSides(BufferBuilder buffer, Color color, float thickness)
+    {
+        // Frontface
+        buffer.pos(pos.x, pos.z, thickness).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.z).normal(0.0F, 0.0F, 1.0F).endVertex();
+        buffer.pos(pos.x, pos.w, thickness).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.w).normal(0.0F, 0.0F, 1.0F).endVertex();
+        buffer.pos(pos.y, pos.w, thickness).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.w).normal(0.0F, 0.0F, 1.0F).endVertex();
+        buffer.pos(pos.y, pos.z, thickness).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.z).normal(0.0F, 0.0F, 1.0F).endVertex();
+
+        // Backface
+        buffer.pos(pos.x, pos.z, -thickness).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.z).normal(0.0F, 0.0F, -1.0F).endVertex();
+        buffer.pos(pos.y, pos.z, -thickness).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.z).normal(0.0F, 0.0F, -1.0F).endVertex();
+        buffer.pos(pos.y, pos.w, -thickness).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.w).normal(0.0F, 0.0F, -1.0F).endVertex();
+        buffer.pos(pos.x, pos.w, -thickness).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.w).normal(0.0F, 0.0F, -1.0F).endVertex();
+
+        // Top side
+        buffer.pos(pos.x, pos.z, thickness).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.z).normal(0.0F, 1.0F, -0.0F).endVertex();
+        buffer.pos(pos.y, pos.z, thickness).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.z).normal(0.0F, 1.0F, -0.0F).endVertex();
+        buffer.pos(pos.y, pos.z, -thickness).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.z).normal(0.0F, 1.0F, -0.0F).endVertex();
+        buffer.pos(pos.x, pos.z, -thickness).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.z).normal(0.0F, 1.0F, -0.0F).endVertex();
+
+        // Bottom side
+        buffer.pos(pos.x, pos.w, thickness).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.w).normal(0.0F, -1.0F, 0.0F).endVertex();
+        buffer.pos(pos.x, pos.w, -thickness).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.w).normal(0.0F, -1.0F, 0.0F).endVertex();
+        buffer.pos(pos.y, pos.w, -thickness).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.w).normal(0.0F, -1.0F, 0.0F).endVertex();
+        buffer.pos(pos.y, pos.w, thickness).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.w).normal(0.0F, -1.0F, 0.0F).endVertex();
+
+        // Left side
+        buffer.pos(pos.x, pos.z, -thickness).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.z).normal(-1.0F, 0.0F, 0.0F).endVertex();
+        buffer.pos(pos.x, pos.w, -thickness).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.w).normal(-1.0F, 0.0F, 0.0F).endVertex();
+        buffer.pos(pos.x, pos.w, thickness).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.w).normal(-1.0F, 0.0F, 0.0F).endVertex();
+        buffer.pos(pos.x, pos.z, thickness).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.z).normal(-1.0F, 0.0F, 0.0F).endVertex();
+
+        // Right side
+        buffer.pos(pos.y, pos.z, -thickness).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.z).normal(1.0F, 0.0F, 0.0F).endVertex();
+        buffer.pos(pos.y, pos.z, thickness).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.z).normal(1.0F, 0.0F, 0.0F).endVertex();
+        buffer.pos(pos.y, pos.w, thickness).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.w).normal(1.0F, 0.0F, 0.0F).endVertex();
+        buffer.pos(pos.y, pos.w, -thickness).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.w).normal(1.0F, 0.0F, 0.0F).endVertex();
     }
 
     @Override
@@ -491,6 +541,7 @@ public class ImageMorph extends AbstractMorph implements IAnimationProvider, ISy
             this.rotation = morph.rotation;
             this.pose.copy(morph.pose);
             this.keying = morph.keying;
+            this.thickness = morph.thickness;
             this.shadow = morph.shadow;
             this.animation.copy(morph.animation);
             this.animation.reset();
@@ -520,6 +571,7 @@ public class ImageMorph extends AbstractMorph implements IAnimationProvider, ISy
             result = result && image.rotation == this.rotation;
             result = result && Objects.equals(image.pose, this.pose);
             result = result && image.keying == this.keying;
+            result = result && image.thickness == this.thickness;
             result = result && image.shadow == this.shadow;
             result = result && Objects.equals(image.animation, this.animation);
         }
@@ -591,6 +643,7 @@ public class ImageMorph extends AbstractMorph implements IAnimationProvider, ISy
         if (this.rotation != 0) tag.setFloat("Rotation", this.rotation);
         if (!this.pose.isDefault()) tag.setTag("Pose", this.pose.toNBT());
         if (this.keying) tag.setBoolean("Keying", this.keying);
+        if (this.thickness) tag.setBoolean("Thickness", this.thickness);
         if (!this.shadow) tag.setBoolean("Shadow", this.shadow);
 
         NBTTagCompound animation = this.animation.toNBT();
@@ -628,6 +681,7 @@ public class ImageMorph extends AbstractMorph implements IAnimationProvider, ISy
         if (tag.hasKey("Animation")) this.animation.fromNBT(tag.getCompoundTag("Animation"));
         if (tag.hasKey("Pose")) this.pose.fromNBT(tag.getCompoundTag("Pose"));
         if (tag.hasKey("Keying")) this.keying = tag.getBoolean("Keying");
+        if (tag.hasKey("Thickness")) this.thickness = tag.getBoolean("Thickness");
         if (tag.hasKey("Shadow")) this.shadow = tag.getBoolean("Shadow");
 
         if (tag.hasKey("Scale"))
