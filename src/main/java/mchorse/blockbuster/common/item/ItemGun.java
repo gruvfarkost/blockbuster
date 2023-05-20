@@ -53,27 +53,28 @@ public class ItemGun extends Item
     }
 
     @Override
-    public boolean shouldCauseReequipAnimation(ItemStack from, ItemStack to, boolean changed)
-    {
-        if (!changed && to.getItem() instanceof ItemGun)
-        {
-            GunEntry entry = TileEntityGunItemStackRenderer.models.get(from);
+    public boolean shouldCauseReequipAnimation(ItemStack from, ItemStack to, boolean changed) {
+        if (!changed && to.getItem() instanceof ItemGun) {
+            GunEntry oldEntry = TileEntityGunItemStackRenderer.models.get(from);
+            GunEntry newEntry = TileEntityGunItemStackRenderer.models.get(to);
 
-            if (entry != null)
-            {
-                GunProps props = NBTUtils.getGunProps(to);
-                boolean same = true;
+            if (oldEntry != null) {
+                GunProps newProps = NBTUtils.getGunProps(to);
+                boolean isSameModel = true;
 
-                same &= Objects.equals(entry.props.defaultMorph, props.defaultMorph);
-                same &= Objects.equals(entry.props.firingMorph, props.firingMorph);
-                same &= Objects.equals(entry.props.crosshairMorph, props.crosshairMorph);
-                same &= Objects.equals(entry.props.handsMorph, props.handsMorph);
-                same &= Objects.equals(entry.props.reloadMorph, props.reloadMorph);
-                same &= Objects.equals(entry.props.zoomOverlayMorph, props.zoomOverlayMorph);
+                isSameModel &= Objects.equals(oldEntry.props.defaultMorph, newProps.defaultMorph);
+                isSameModel &= Objects.equals(oldEntry.props.firingMorph, newProps.firingMorph);
+                isSameModel &= Objects.equals(oldEntry.props.crosshairMorph, newProps.crosshairMorph);
+                isSameModel &= Objects.equals(oldEntry.props.handsMorph, newProps.handsMorph);
+                isSameModel &= Objects.equals(oldEntry.props.reloadMorph, newProps.reloadMorph);
+                isSameModel &= Objects.equals(oldEntry.props.zoomOverlayMorph, newProps.zoomOverlayMorph);
 
-                TileEntityGunItemStackRenderer.models.put(to, TileEntityGunItemStackRenderer.models.remove(from));
+                if (isSameModel && newEntry == null) {
+                    // Moving the old model to the new stack only if there's not already a model associated with the 'to' stack
+                    TileEntityGunItemStackRenderer.models.put(to, TileEntityGunItemStackRenderer.models.remove(from));
+                }
 
-                return same;
+                return !isSameModel;
             }
         }
 
