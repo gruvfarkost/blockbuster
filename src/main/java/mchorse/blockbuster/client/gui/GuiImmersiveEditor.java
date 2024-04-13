@@ -130,9 +130,12 @@ public class GuiImmersiveEditor extends GuiBase
         this.lastScreen.setWorldAndResolution(this.mc, i, j);
 
         this.mc.gameSettings.thirdPersonView = this.lastTPS;
-        this.mc.player.sendChatMessage("/gamemode " + this.lastMode.getID());
-
-        this.mc.player.setPositionAndRotation(this.lastPosX, this.lastPosY, this.lastPosZ, this.lastRotYaw, this.lastRotPitch);
+        /* if the server connection is terminated unexpectedly,
+         it seems to happen that player is null before screen is closed */
+        if (this.mc.player != null) {
+            this.mc.player.sendChatMessage("/gamemode " + this.lastMode.getID());
+            this.mc.player.setPositionAndRotation(this.lastPosX, this.lastPosY, this.lastPosZ, this.lastRotYaw, this.lastRotPitch);
+        }
 
         this.lastScreen = null;
         MinecraftForge.EVENT_BUS.unregister(this.morphs);
