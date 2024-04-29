@@ -108,3 +108,7 @@ blockbuster.config:
 
         model_block: Model block
         record_editor: Record editor
+
+    better_lights:
+        title: Better Lights
+        enable_better_lights: Enable Better Lights Morph

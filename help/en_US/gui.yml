@@ -674,6 +674,7 @@ blockbuster.gui:
             realistic_collision_drag: Realistic collision drag
             realistic_collision_drag_tooltip: Collision drag will be reset when particle stops colliding. Activating this will also fix particles accelerating away with high collision drag values.
             drag: Collision drag adds a drag (slowdown) after particle's collision with blocks in the world
+            rotation_drag: Rotation drag that should happen on collision. It will slow down the texture rotation.
             bounciness: Bounciness multiplies particle's acceleration after collision
             random_direction: Random Direction - randomize the direction vector. It doesn't affect the velocity.
             damping:
@@ -721,6 +722,51 @@ blockbuster.gui:
         name: Light
         light_value: Light value
         light_value_tooltip: You need to have Optifine installed and dynamic lights set to fancy for this to work. This slider allows to choose the strength of the light.
+
+    betterlights_morph:
+        name: BetterLights
+        sponsored_title: Sponsored by...
+        sponsored_tooltip: "Made possible by donations. Thank you!"
+        enable_always: Enable always
+        enable_always_tooltip: Enable the morph even when the blockbuster configuration {config.better_lights.enable_better_lights} is disabled.
+        not_installed_message: You need the BetterLights mod for this morph to work.
+        mod_page_button: Open mod page
+        #the option keys are derived from the config property names of BetterLights, where spaces are replaced with underscores.
+        #if it's a tooltip, the string "_tooltip" will be attached to the end.
+        #sub categories always have a title
+        #all language keys are converted to lowercase
+        options:
+            enabled: Enabled
+            direction: Direction
+            directionx_tooltip: X
+            directiony_tooltip: Y
+            directionz_tooltip: Z
+            color: Light color
+            intensity_tooltip: Light intensity
+            distance_tooltip: Light distance
+            innerangle_tooltip: Inner angle
+            outerangle_tooltip: Outer angle
+            shadows:
+                title: Shadow
+                enabled: Enabled
+                fov_offset_tooltip: Shadow virtual camera FOV offset.
+                distance_tooltip: Shadow distance
+            flare_effect:
+                title: Flare effect
+                enabled: Enabled
+                size_offset_tooltip: Size offset
+                falloff_distance_tooltip: Falloff distance
+                start_angle_tooltip: Start angle
+                end_angle_tooltip: End angle
+                angle_factor_offset_tooltip: Angle factor offset
+                intensity_tooltip: Intensity
+            volumetric_fog_effect:
+                title: Volumetric fog effect
+                enabled: Enabled
+                scattering_albedo_tooltip: Scattering
+                density_tooltip: Density
+                anisotropy_tooltip: Anisotropy
+                samples_tooltip: Samples
 
     texture:
         title: Texture manager

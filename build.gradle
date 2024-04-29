@@ -57,7 +57,7 @@ dependencies
 	compile files("run/libs/metamorph-${metamorph}-${project.minecraft.version}-dev.jar")
 	compile files("run/libs/aperture-${aperture}-${project.minecraft.version}-dev.jar")
     compile files("run/libs/Minema-${minema}-${project.minecraft.version}-dev.jar")
-    compile files("run/mods/BetterLights-${betterlights}.PREVIEW-all.jar")
+    compile files("run/libs/BetterLights-${betterlights}-all.jar")
     compile files("run/libs/ACsGuis-1.2.11-dev.jar")
 }
 

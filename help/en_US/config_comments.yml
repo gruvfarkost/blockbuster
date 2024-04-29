@@ -69,3 +69,6 @@ blockbuster.config.comments:
     immersive_editor:
         model_block: Whether to use the immersive editor for model block
         record_editor: Whether to use the immersive editor for the record editor when using the Aperture camera editor
+
+    better_lights:
+        enable_better_lights: Enable the Better Lights lightcaster in all morphs. You still need the Better Lights Mod.

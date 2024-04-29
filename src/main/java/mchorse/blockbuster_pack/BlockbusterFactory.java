@@ -1,24 +1,8 @@
 package mchorse.blockbuster_pack;
 
 import mchorse.blockbuster.api.ModelHandler;
-import mchorse.blockbuster_pack.client.gui.GuiCustomMorph;
-import mchorse.blockbuster_pack.client.gui.GuiImageMorph;
-import mchorse.blockbuster_pack.client.gui.GuiLightMorph;
-import mchorse.blockbuster_pack.client.gui.GuiParticleMorph;
-import mchorse.blockbuster_pack.client.gui.GuiRecordMorph;
-import mchorse.blockbuster_pack.client.gui.GuiSequencerMorph;
-import mchorse.blockbuster_pack.client.gui.GuiSnowstormMorph;
-import mchorse.blockbuster_pack.client.gui.GuiStructureMorph;
-import mchorse.blockbuster_pack.client.gui.GuiTrackerMorph;
-import mchorse.blockbuster_pack.morphs.CustomMorph;
-import mchorse.blockbuster_pack.morphs.ImageMorph;
-import mchorse.blockbuster_pack.morphs.LightMorph;
-import mchorse.blockbuster_pack.morphs.ParticleMorph;
-import mchorse.blockbuster_pack.morphs.RecordMorph;
-import mchorse.blockbuster_pack.morphs.SequencerMorph;
-import mchorse.blockbuster_pack.morphs.SnowstormMorph;
-import mchorse.blockbuster_pack.morphs.StructureMorph;
-import mchorse.blockbuster_pack.morphs.TrackerMorph;
+import mchorse.blockbuster_pack.client.gui.*;
+import mchorse.blockbuster_pack.morphs.*;
 import mchorse.metamorph.api.IMorphFactory;
 import mchorse.metamorph.api.MorphManager;
 import mchorse.metamorph.api.morphs.AbstractMorph;
@@ -58,6 +42,7 @@ public class BlockbusterFactory implements IMorphFactory
         editors.add(new GuiSnowstormMorph(mc));
         editors.add(new GuiTrackerMorph(mc));
         editors.add(new GuiLightMorph(mc));
+        editors.add(new GuiBetterLightsMorph(mc));
     }
 
     @Override
@@ -100,6 +85,10 @@ public class BlockbusterFactory implements IMorphFactory
         {
             morph = new LightMorph();
         }
+        else if (name.equals("betterLights"))
+        {
+            morph = new BetterLightsMorph();
+        }
         else
         {
             /* Custom model morphs */
@@ -117,6 +106,6 @@ public class BlockbusterFactory implements IMorphFactory
     @Override
     public boolean hasMorph(String morph)
     {
-        return morph.startsWith("blockbuster.") || morph.equals("sequencer") || morph.equals("structure") || morph.equals("particle") || morph.equals("snowstorm") || morph.equals("tracker") || morph.equals("light");
+        return morph.startsWith("blockbuster.") || morph.equals("sequencer") || morph.equals("structure") || morph.equals("particle") || morph.equals("snowstorm") || morph.equals("tracker") || morph.equals("light") || morph.equals("betterLights");
     }
 }

@@ -130,7 +130,7 @@ public class ClientProxy extends CommonProxy
 
         /* Entities */
         this.registerEntityRender(EntityActor.class, new RenderActor.FactoryActor());
-        this.registerEntityRender(ExpirableDummyEntity.class, new RenderExpirableDummy.FactoryExpirableDummy());
+        //this.registerEntityRender(ExpirableDummyEntity.class, new RenderExpirableDummy.FactoryExpirableDummy());
         this.registerEntityRender(EntityGunProjectile.class, new RenderGunProjectile.FactoryGunProjectile());
 
         /* Tile entity */

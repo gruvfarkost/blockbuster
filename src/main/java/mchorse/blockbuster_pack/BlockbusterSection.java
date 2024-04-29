@@ -5,15 +5,7 @@ import mchorse.blockbuster.ClientProxy;
 import mchorse.blockbuster.api.Model;
 import mchorse.blockbuster.network.Dispatcher;
 import mchorse.blockbuster.network.common.structure.PacketStructureListRequest;
-import mchorse.blockbuster_pack.morphs.CustomMorph;
-import mchorse.blockbuster_pack.morphs.ImageMorph;
-import mchorse.blockbuster_pack.morphs.LightMorph;
-import mchorse.blockbuster_pack.morphs.ParticleMorph;
-import mchorse.blockbuster_pack.morphs.RecordMorph;
-import mchorse.blockbuster_pack.morphs.SequencerMorph;
-import mchorse.blockbuster_pack.morphs.SnowstormMorph;
-import mchorse.blockbuster_pack.morphs.StructureMorph;
-import mchorse.blockbuster_pack.morphs.TrackerMorph;
+import mchorse.blockbuster_pack.morphs.*;
 import mchorse.mclib.utils.files.entries.AbstractEntry;
 import mchorse.mclib.utils.files.entries.FileEntry;
 import mchorse.mclib.utils.files.entries.FolderEntry;
@@ -80,6 +72,7 @@ public class BlockbusterSection extends MorphSection
         
         this.extra.add(new TrackerMorph());
         this.extra.add(new LightMorph());
+        this.extra.add(new BetterLightsMorph());
     }
 
     private void addFromNBT(String nbt)

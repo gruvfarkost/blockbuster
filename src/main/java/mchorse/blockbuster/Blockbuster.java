@@ -215,6 +215,7 @@ public class Blockbuster
 
     public static ValueBoolean immersiveModelBlock;
     public static ValueBoolean immersiveRecordEditor;
+    public static ValueBoolean enableBetterLights;
 
     /**
      * "Macro" for getting resource location for Blockbuster mod items,
@@ -349,6 +350,11 @@ public class Blockbuster
 
         immersiveModelBlock = builder.getBoolean("model_block", true);
         immersiveRecordEditor = builder.getBoolean("record_editor", true);
+
+        builder.getCategory().markClientSide();
+
+        builder.category("better_lights");
+        enableBetterLights = builder.getBoolean("enable_better_lights", true);
 
         builder.getCategory().markClientSide();
 
