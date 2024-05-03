@@ -33,7 +33,7 @@ public class BetterLightsDummyEntity extends ExpirableDummyEntity
 
         if (this.isDead)
         {
-            BetterLightsMod.getLightManager().removeLightCaster(this.caster, false);
+            BetterLightsMod.getLightManager().removeLightCaster(this.world, this.caster, false);
         }
     }
 }

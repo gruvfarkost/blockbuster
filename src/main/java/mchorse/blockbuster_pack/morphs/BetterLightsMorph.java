@@ -185,7 +185,7 @@ public class BetterLightsMorph extends BetterLightsMorphTemplate implements IAni
     @Optional.Method(modid = BetterLightsConstants.ID)
     protected void addToWorld() {
         Minecraft.getMinecraft().world.addEntityToWorld(this.dummy.getEntityId(), this.dummy);
-        BetterLightsMod.getLightManager().addTemporaryLightCaster(this.getLightcaster(), false);
+        BetterLightsMod.getLightManager().addTemporaryLightCaster(Minecraft.getMinecraft().world, this.getLightcaster(), false);
     }
 
     private void updateDummyEntityPosition()
