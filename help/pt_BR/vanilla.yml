@@ -1,0 +1,68 @@
+# Item tooltips
+blockbuster:
+    info:
+        playback_button: Alterna a reprodução da cena
+        playback_profile: Perfil de inicios "{f}{o}%s{r}{7}"
+        playback_play: Reproduzir câmara
+        playback_scene: Attached to scene {f}%s{r}
+
+        actor_config: Usa-lo em um ator
+        register: Costumava vincular atores ao bloco de diretor. Uma relíquia do passado...
+        director_block: Costumavam ser cenas antes das cenas. Uma relíquia do passado...
+        model_block: Permite colocar morphs como modelos estáticos
+        green_block: "%s bloco chroma. Pode ser usado para a chroma keybind."
+        dim_green_block: "Não brilha."
+
+    morph:
+        image: Imagem 
+        sequencer: Sequência
+        record: Gravar
+        structure: Estrutura
+        particle: Partícula
+
+# Creative tabs
+itemGroup.blockbuster: Blockbuster
+
+# Block name
+tile.blockbuster:
+    director.name: Bloco de diretor
+    model.name: Bloco de modelo
+    green.name: Bloco chroma
+    dim_green.name: Bloco chroma dim
+
+# Item names
+item:
+    blockbuster:
+        playback.name: Botão de reprodução
+        register.name: Registro de dispositivos
+        actor_config.name: Dispositivo de configuração de atores
+        gun.name: Pistola BB
+        model.name: Bloco de Modelo
+        model1.name: Luz 1 do bloco de modelo
+        model2.name: Luz 2 do bloco de modelo
+        model3.name: Luz 3 do bloco de modelo
+        model4.name: Luz 4 do bloco de modelo
+        model5.name: Luz 5 do bloco de modelo
+        model6.name: Luz 6 do bloco de modelo
+        model7.name: Luz 7 do bloco de modelo
+        model8.name: Luz 8 do bloco de modelo
+        model9.name: Luz 9 do bloco de modelo
+        model10.name: Luz 10 do bloco de modelo
+        model11.name: Luz 11 do bloco de modelo
+        model12.name: Luz 12 do bloco de modelo
+        model13.name: Luz 13 do bloco de modelo
+        model14.name: Luz 14 do bloco de modelo
+        model15.name: Luz 15 do bloco de modelo
+
+# Entity names
+entity.blockbuster.Actor.name: Ator
+
+blockbuster.chroma_blocks:
+    0: Verde
+    1: Azul
+    2: Vermelho
+    3: Amarelo
+    4: Ciano
+    5: Roxo
+    6: Branco
+    7: Preto

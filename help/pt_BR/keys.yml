@@ -1,0 +1,13 @@
+# Keys localization
+key:
+    blockbuster:
+        # Categories
+        category: Blockbuster
+        
+        plause_director: Reproduzir/parar cena
+        record_director: Gravar replay de cena
+        pause_director: Pausar cena / cancelar gravação
+        open_gun: Configurar pistola
+        zoom: Ampliar
+        gun_reload: Recarregar
+        gun_shoot: Atirar

@@ -1,0 +1,50 @@
+blockbuster.info:
+    actor:
+        playing: "{f}Esse ator já está sendo reporduzido!"
+
+    scene:
+        looped: "{f}A cena dada está em loop agora!"
+        unlooped: "{f}A cena dada está não está em loop agora!"
+
+    # General command infos
+    commands:
+        load_chunks: "{f}Carregou todas as chunks geradas na distância de renderização."
+        
+        replace_texture: "{f}Textura %s{f} foi substituída com a textura %s{f}."
+        restore_texture: "{f}Textura %s{f} foi restaurada para seu estagio inicial."
+        
+        not_loaded: "{f}Textura %s{f} não foi carregada."
+
+        started_combining: "{f}Iniciando combinação de skins %s{f} skins..."
+        combined: "{f}Combinada %s{f} skin."
+        finished_combining: "{f}Terminando skins combinadas!"
+    
+    models.loaded: "{f}Recebido %s{f} modelos custumizados e %s{f} skins do servidor."
+    
+    record:
+        action: "{f}A ação no %s{f} tick é %s{f} no índice %s{f} com a data: %s"
+        
+        info:
+            |
+                {f}Informação sobre a gravação do player nomeada %s{f}:
+                
+                {7}*{f} Versão da gravação: %s
+                {7}*{f} Duração da gravação em ticks: %s
+                {7}*{f} Ticks antes de descarregar: %s
+        
+        search_type: "{f}Pesquisar ação com o tipo %s{f}:"
+        search_action: "{f}Encontrada ação no %s{f} tick no índice %s{f}."
+        search_action_data: "{f}Encotrada ação no %s{f} tick no índice %s{f} com a data: %s"
+    
+    # Recording strings
+    recording:
+        recording: "%s{f} já está sendo gravada."
+        dead: "{f}Gravação parada %s{f}, porque o player está morto."
+        message: "{f}Para começar uma gravação com um ator %s{f}, %s{f}!"
+        clickhere: clique aqui
+
+    action:
+        cancel: "{f}A gravação atual foi cancelada."
+
+    damage_control:
+        message: "{f}O bloco de destino é manejado pelo controlo de dano da cena %s{f}."

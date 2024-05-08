@@ -1,0 +1,45 @@
+blockbuster.success:
+    commands:
+        mipmaped_texture: "{f}Texture %s{f} was successfully mipmapped!"
+        demipmaped_texture: "{f}Texture's mipmap %s{f} was deleted!"
+        
+        texture_filter_linear: "{f}Texture's filter was changed to linear!"
+        texture_filter_nearest: "{f}Texture's filter was changed to nearest neighbor!"
+        
+        convert_skin: "{f}Successfully converted %s{r}/%s{r} skin!"
+
+        item_nbt: "{f}The NBT data of the held item was copied to the clipboard!"
+        model_report: "{f}Model folder report was successfully copied to your copy-paste buffer!"
+
+    scene:
+        play: "{f}Scene by name %s{f} has started playing!"
+        stop: "{f}Scene by name %s{f} has stopped!"
+    
+    model:
+        export:
+            saved: "{f}Entity model %s{f} was saved to %s{f}."
+            obj: "{f}Successfully exported model %s{f} to OBJ!"
+        
+        reload: "{f}Server has reloaded the models!"
+        skin_moved: "{f}Skin %s{f} was moved to %s{f}'s model skins folder, with filename %s{f}!"
+        
+    record:
+        changed_origin: "{f}Player recording's origin was successfully changed from %s{f} from (%s{f}, %s{f}, %s{f}) to (%s{f}, %s{f}, %s{f})!"
+        duped: "{f}Player recording %s{f} was successfully duplicated to %s{f}!"
+        clean: "{f}Player recording %s{f}'s %s{f} property was successfully cleaned from %s{f} to %s{f}!"
+        create: "{f}Player recording %s{f} was successfully created!"
+        prolonged: "{f}Player recording %s{f} was prolonged. Its pre and post delays are: %s{f} and %s{f} (respectively)."
+        faded: "{f}Player recording %s{f}'s last %s{f} frames were faded."
+        flipped: "{f}Player recording %s{f} was successfully flipped across %s{f} axis at %s{f} coordinate!"
+        cut: "{f}Player recording %s{f} was cut between %s{f} and %s{f} frames."
+        restored: "{f}Player recording %s{f}'s %s{f} iteration was restored!"
+        reversed: "{f}Player recording %s{f} was successfully reversed!"
+        fill: "{f}Successfully filled %s{f} frames at %s{f} tick in %s{f} player recording (final length is %s{f} ticks)!"
+        erase: "{f}Successfully erased %s{f} frames at %s{f} tick in %s{f} player recording (final length is %s{f} ticks)!"
+        process: "{f}Player recording %s{f}'s %s{f} property was successfully processed between %s{f} to %s{f}!"
+        calculate_body_yaw: "{f}Player recording %s{f}'s body yaw was successfully auto calculated!"
+        remove_body_yaw: "{f}Player recording %s{f}'s body yaw was removed!"
+        renamed: "{f}Player recording %s{f} was successfully renamed to %s{f}!"
+        camera: "{f}Player recording %s{f} was successfully generated out of camera profile %s{f}!"
+        apply: "{f}Player recording %s{f}'s %s{f} property was successfully applied with %s{f} properties from player recording %s{f} from %s{f} to %s{f}!"
+        merge: "{f}Successfully merged actions from %s{f} into %s{f}!"

@@ -1,0 +1,122 @@
+blockbuster.gui.me:
+    keys:
+        category: Editor de modelos do Blockbuster
+
+        save: Salvar modelo atual
+
+    limbs:
+        title: Membros
+        
+        size: Escala do membro
+        size_offset: Deslocamento do tamanho
+        item_scale: Escala do item
+        texture: Deslocamento da textura
+        anchor: Ponto da Âncora
+        origin: Origem do OBJ/VOX
+        slot: Slot da Armadura
+        
+        color: Cor
+        opacity: Opacidade
+        specular: Cor especular (usada para shaders)
+        mirror: Espelhar
+        lighting: Iluminar
+        shading: Sombreamento
+        smooth: Suavizar
+        hold: Espaço de item retido
+        none: Nenhum
+        right: Direita
+        left: Esquerda
+
+        appearance: Aparência
+
+        animation: Animações
+        holding: Segurar
+        swiping: Ataque
+        looking: Olhando
+        swinging: Oscilante
+        idle: Parado
+        invert: Inverter
+        wheel: Roda
+        wing: Asa
+        roll: Rolar
+        cape: Capa
+        
+        rename: Renomear
+        parent: Entreligar
+
+        anchor_modal: "Insira os pontos de âncora desejados (valores 0..1 para cada eixo):"
+        new_limb: Digite um nome para um novo membro...
+        last_limb: Você não pode remover o último membro...
+        rename_limb: "Renomeie o membro atual digitando um novo nome:"
+        parent_limb: "Escolha o membro entreligado para o membro atualmente selecionado..."
+        obj_limb: Você não pode fazer esta operação em um membro fornecido pelo arquivo OBJ/VOX...
+        
+        slots:
+            none: Nenhum
+            head: Capacete
+            chest: Peitoral
+            left_shoulder: Ombro esquerdo
+            right_shoulder: Ombro direito
+            leggings: Pernas do corpo
+            left_leg: Perna esquerda
+            right_leg: Perna direita
+            left_foot: Sapato esquerdo
+            right_foot: Sapato direito
+
+        context:
+            anchor_setup: Configurar ponto da âncora...
+            anchor_move: Configurar e mover para o ponto da âncora...
+    
+    models:
+        title: Modelos
+        save: Salvar modelo
+        export: Criar modelo apartir de um mob
+        name: "Introduza um nome para o modelo:"
+        pick: "Selecione o mob que você quer para exportar os membros apartir de:"
+        error: "Whoops, não foi possível criar um modelo porque ocorreu um erro: %s"
+    
+    options:
+        name: Nome de exibição
+        texture: Escala da textura
+        scale: Escala global
+        scale_gui: Escala da GUI
+        default: Textura padrão
+        skins: Pasta de skins
+        extrusion: Extrusão 3D
+        extrude_max_factor: Fator máximo de extrusão 3D. Esta opção permite usar mais pixels em skins HD para extrusão. Quanto maior o valor, mais bits extrudados você terá.
+        extrude_inwards: Fator de extrusão para dentro. Esta opção permite controlar se os bits de skin HD estão sendo extrudados mais para dentro, pois quanto maior o fator máximo, mais finos são os bits.
+        provides_obj: Fornece OBJ
+        provides_mtl: Fornece MTL
+        legacy_obj: Carregamento de OBJ antigo
+        legacy_obj_tooltip: When enabled, OBJ models will be loaded using the old method, which contains inconsistencies such as being flipped on X axis.\n\nWhen disabled, OBJ models will be loaded using new method which should be more consistent with the way OBJ model supposed to look.
+        default_texture: Selecionar textura padrão
+    
+    poses:
+        title: Poses
+        new_pose: "Digite um nome para uma nova pose:"
+
+        paste_pose: "Digite um nome para uma pose colada:"
+        import_pose: "Digite aqui os dados NBT de uma pose para importá-los para a pose atual:"
+        import_pose_tooltip: "Import pose properties with NBT tag"
+        copy_pose: "Selecione a pose da qual deseja copiar as propriedades do membro atual."
+        copy_pose_tooltip: "Copy pose properties from another pose"
+        apply_pose: "Selecione as poses nas quais deseja aplicar a pose do membro atual."
+        apply_pose_tooltip: "Aplicar a pose do membro atual a outras poses"
+        rename_pose: "Digite um novo nome para esta pose:"
+        standard: "Você não pode remover uma pose obrigatória..."
+        hitbox: Escala da Hitbox
+
+        context:
+            copy: Copiar pose
+            paste: Colar pose
+            rename: Renomear pose
+    
+    tooltips:
+        save: Salvar modelo
+
+        swipe: Pré-visualizar o ataque do braço
+        running: Alternar visualização da animação em execução
+        held_items: Toggle held items preview
+        hitbox: Alternar visualização da hitbox
+        looking: Alternar visualização da rotação da cabeça
+        skin: Escolha uma skin para visualização

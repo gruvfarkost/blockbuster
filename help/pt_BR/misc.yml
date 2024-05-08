@@ -1,0 +1,27 @@
+# Recording
+blockbuster:
+    # Parsing
+    parsing:
+        lacks_pose: O modelo analisado com o nome "%s" não contem a pose "%s" !
+        lacks_limbs: O modelo analisado com o nome "%s" não contem nenhum membro!
+
+    recording: Gravando para {7}%s{r}
+    "sim": "Sim"
+    "não": "Não"
+    morph_error: Nenhum modelo encontrado
+    start_recording: "Iniciando gravação {7}%s{r} em {7}%s{r}"
+
+    bye_director_block: Os blocos de diretor foram removidos. Esse bloco de diretor foi convertido para uma cena. Em vez disso, use cenas.
+    bye_director_block_guide: "To learn more about it, "
+    bye_director_block_guide_watch: "watch this video"
+    bye_register_item: Blocos de diretor foram removidos. Esse item agora é inútil...
+
+    light: luz %s
+
+# Metamorph
+morph.section.blockbuster: Modelos do Blockbuster
+
+morph.category:
+    blockbuster_extra: Extras do Blockbuster
+    blockbuster_structures: Estruturas do Blockbuster
+    blockbuster_models: Modelos do Blockbuster

@@ -1,0 +1,114 @@
+# Config strings
+blockbuster.config:
+    title: Blockbuster
+
+    general:
+        title: Geral
+        tooltip: Configurações gerais do Blockbuster mod
+
+        show_first_time_modal: Mostrar primeiro o tempo do modal
+        extra_wubs: Wubs Extras
+        auto_refresh_models: Recarregar modelos e skins
+        debug_playback_ticks: Debug ticks
+        green_screen_sky: Céu Chroma
+        green_screen_sky_color: Cor do céu Chroma
+        url_skins_sync_download: Síncronizar downloads de URL'S
+        add_utility_blocks: Adicionar blocos de utilidade
+        bb_gun_sync_distance: Sincronizar distância do BB gun
+    
+    model_block:
+        title: Bloco de Modelo
+        tooltip: Opções de configuração relatadas no Bloco de Modelo
+        
+        model_block_disable_rendering: Desabilitar renderização do bloco de modelo
+        model_block_disable_item_rendering: Desabilitar renderização de itens
+        model_block_missing_name_rendering: Renderizar diretórios de modelos não encontrados
+        model_block_debug_rendering_f1: Renderizar debug do bloco de modelo no F1
+        restore: Restaurando blocos de modelo
+        reset_on_playback: Redefinir na reprodução
+    
+    recording:
+        title: Gravando
+        tooltip: Aqui contem tudo relacionado ao sistema de gravação de players
+
+        recording_countdown: Contagem regresiva para a gravação
+        record_unload_time: Tempo de descarregamento automático para gravações
+        record_unload: Descarregamento automático para gravações
+        record_sync_rate: Gravar sincronização de ticks
+        record_attack_on_swipe: Atacar ao bater
+        record_commands: Gravar comandos
+        record_chat_prefix: Ações de prefix do chat
+        record_pause_preview: Melhor preview
+        record_render_debug_paths: Renderizar diretórios de debug
+
+    scenes:
+        title: Cenas
+        tooltip: Aqui contem tudo relacionado a cenas
+
+        save_update: Atualizar cena depois de salvar
+
+    actor:
+        title: Ator
+        tooltip: Opção de configuração da entidade do ator (não relacionado a jogadores falsos)
+
+        actor_fall_damage: Dano de queda de atores
+        actor_tracking_range: Área de rastreamento do ator
+        actor_rendering_range: Área de renderização do ator
+        actor_always_render: Sempre renderizar o ator
+        actor_always_render_names: Sempre renderizar nomes de ator
+        actor_swish_swipe: Deslizar
+        actor_y: Concertar movimento Y
+        actor_disable_riding: Desabilitar cavalgando
+        actor_playback_body_yaw: Reproduzir guinada do corpo
+
+    damage_control:
+        title: Controlo de Dano
+        tooltip: O controlo de dano é um sistema que recoloca todos os blocos antes do ator os ter quebrado depois de uma reprodução
+        
+        damage_control: Controlo de Dano
+        damage_control_distance: Distancia do dano
+        damage_control_message: Mensagem do controlo de dano
+
+    model_folders:
+        title: Pasta de Modelos
+        tooltip: Adiciona pastas de modelo adicionais
+
+        path: Pasta adicional
+
+    snowstorm:
+        title: Snowstorm
+        tooltip: Snowstorm é um sistema de partículas que permite criar partículas sofisticadas, aqui você encontra opções globais relacionadas ao sistema de partículas
+
+        depth_sorting: Classificação por profundidade de partículas
+
+    audio:
+        title: Áudio
+        tooltip: Opções para o recurso de sincronização de áudio dentro do jogo
+
+        waveform_visible: Barras de áudio vísiveis
+        waveform_density: Densidade da onda de áudio
+        waveform_width: Largura da barra de áudio
+        waveform_height: Audio bar height
+        waveform_filename: Mostrar o nome de arquivos na barra de áudio
+        waveform_time: Mostrar tempo de reprodução na barra de áudio
+        audio_sync: Sincronizar áudio entre servidor e cliente
+
+    onion_skin:
+        title: Onion skin
+
+        seq_prev: Morphs anteriores
+        seq_prev_color: Cor dos morphs anteriores
+        seq_next: Morphs seguintes
+        seq_next_color: Cor do próximo morph
+        seq_loop_color: Marcador de deslocamento
+
+    immersive_editor:
+        title: Editor Imersivo
+        tooltip: Opções para o editor imersivo
+
+        model_block: Bloco de modelo
+        record_editor: Editor de gravações
+
+    better_lights:
+        title: Better Lights
+        enable_better_lights: Habilita o morph Better Lights
