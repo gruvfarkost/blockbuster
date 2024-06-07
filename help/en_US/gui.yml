@@ -365,6 +365,8 @@ blockbuster.gui:
         right: Right
         top: Top
         bottom: Bottom
+        thickness: Extrusion
+        thickness_tooltip: Extrude the image.
         resize_crop: Resize crop
         dimensions: "Size (%spx, %spx)"
         offset_x: X coordinate shift

@@ -13,6 +13,8 @@ import mchorse.metamorph.api.morphs.utils.Animation;
 import mchorse.metamorph.api.morphs.utils.IAnimationProvider;
 import mchorse.metamorph.api.morphs.utils.IMorphGenerator;
 import mchorse.metamorph.api.morphs.utils.ISyncableMorph;
+import mchorse.vanilla_pack.render.CachedExtrusion;
+import mchorse.vanilla_pack.render.ItemExtruder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -423,7 +425,13 @@ public class ImageMorph extends AbstractMorph implements IAnimationProvider, ISy
         }
         else
         {
-            bufferVertexAllSides(buffer, color, 0.5F);
+            CachedExtrusion extrusion = ItemExtruder.extrude(this.texture);
+
+            if (extrusion != null)
+            {
+                GlStateManager.rotate(180, 0, 0, 1);
+                extrusion.render();
+            }
         }
 
         tessellator.draw();
@@ -453,45 +461,6 @@ public class ImageMorph extends AbstractMorph implements IAnimationProvider, ISy
         GlStateManager.disableBlend();
         GlStateManager.disableAlpha();
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
-    }
-
-    private void bufferVertexAllSides(BufferBuilder buffer, Color color, float thickness)
-    {
-        // Frontface
-        buffer.pos(pos.x, pos.z, thickness).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.z).normal(0.0F, 0.0F, 1.0F).endVertex();
-        buffer.pos(pos.x, pos.w, thickness).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.w).normal(0.0F, 0.0F, 1.0F).endVertex();
-        buffer.pos(pos.y, pos.w, thickness).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.w).normal(0.0F, 0.0F, 1.0F).endVertex();
-        buffer.pos(pos.y, pos.z, thickness).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.z).normal(0.0F, 0.0F, 1.0F).endVertex();
-
-        // Backface
-        buffer.pos(pos.x, pos.z, -thickness).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.z).normal(0.0F, 0.0F, -1.0F).endVertex();
-        buffer.pos(pos.y, pos.z, -thickness).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.z).normal(0.0F, 0.0F, -1.0F).endVertex();
-        buffer.pos(pos.y, pos.w, -thickness).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.w).normal(0.0F, 0.0F, -1.0F).endVertex();
-        buffer.pos(pos.x, pos.w, -thickness).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.w).normal(0.0F, 0.0F, -1.0F).endVertex();
-
-        // Top side
-        buffer.pos(pos.x, pos.z, thickness).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.z).normal(0.0F, 1.0F, -0.0F).endVertex();
-        buffer.pos(pos.y, pos.z, thickness).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.z).normal(0.0F, 1.0F, -0.0F).endVertex();
-        buffer.pos(pos.y, pos.z, -thickness).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.z).normal(0.0F, 1.0F, -0.0F).endVertex();
-        buffer.pos(pos.x, pos.z, -thickness).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.z).normal(0.0F, 1.0F, -0.0F).endVertex();
-
-        // Bottom side
-        buffer.pos(pos.x, pos.w, thickness).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.w).normal(0.0F, -1.0F, 0.0F).endVertex();
-        buffer.pos(pos.x, pos.w, -thickness).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.w).normal(0.0F, -1.0F, 0.0F).endVertex();
-        buffer.pos(pos.y, pos.w, -thickness).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.w).normal(0.0F, -1.0F, 0.0F).endVertex();
-        buffer.pos(pos.y, pos.w, thickness).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.w).normal(0.0F, -1.0F, 0.0F).endVertex();
-
-        // Left side
-        buffer.pos(pos.x, pos.z, -thickness).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.z).normal(-1.0F, 0.0F, 0.0F).endVertex();
-        buffer.pos(pos.x, pos.w, -thickness).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.w).normal(-1.0F, 0.0F, 0.0F).endVertex();
-        buffer.pos(pos.x, pos.w, thickness).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.w).normal(-1.0F, 0.0F, 0.0F).endVertex();
-        buffer.pos(pos.x, pos.z, thickness).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.z).normal(-1.0F, 0.0F, 0.0F).endVertex();
-
-        // Right side
-        buffer.pos(pos.y, pos.z, -thickness).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.z).normal(1.0F, 0.0F, 0.0F).endVertex();
-        buffer.pos(pos.y, pos.z, thickness).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.z).normal(1.0F, 0.0F, 0.0F).endVertex();
-        buffer.pos(pos.y, pos.w, thickness).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.w).normal(1.0F, 0.0F, 0.0F).endVertex();
-        buffer.pos(pos.y, pos.w, -thickness).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.w).normal(1.0F, 0.0F, 0.0F).endVertex();
     }
 
     @Override
