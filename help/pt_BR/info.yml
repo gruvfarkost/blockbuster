@@ -1,10 +1,10 @@
 blockbuster.info:
     actor:
-        playing: "{f}Esse ator já está sendo reporduzido!"
+        playing: "{f}Esse ator já está sendo reproduzido!"
 
     scene:
-        looped: "{f}A cena dada está em loop agora!"
-        unlooped: "{f}A cena dada está não está em loop agora!"
+        looped: "{f}A cena dada agora está em loop!"
+        unlooped: "{f}A cena dada agora já não está em loop!"
 
     # General command infos
     commands:
