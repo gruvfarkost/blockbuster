@@ -31,9 +31,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.input.Keyboard;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class GuiRecordTimeline extends GuiElement
 {
@@ -97,6 +95,19 @@ public class GuiRecordTimeline extends GuiElement
 
     private int adaptiveMaxIndex;
     private final int itemHeight = 20;
+    private final int morphActionHandleWidth = 4;
+    /**
+     * A list of morph actions where the time handles have been selected.
+     * Important to draw the selection and for multi selection of time handles
+     */
+    private final Set<MorphAction> selectedTimeHandles = Collections.newSetFromMap(new IdentityHashMap<>()) ;
+    private boolean movingMorphActionTimeHandle = false;
+    /**
+     * The tick that got clicked by {@link #mouseClicked(GuiContext)}
+     * This is cleared after releasing mouse.
+     * The key of the map is the mouse button.
+     */
+    private final Map<Integer, Integer> clickedTick = new HashMap<>();
 
     public GuiRecordTimeline(Minecraft mc, GuiRecordingEditorPanel panel)
     {
@@ -207,8 +218,13 @@ public class GuiRecordTimeline extends GuiElement
         int tick = this.scroll.getIndex(context.mouseX, context.mouseY);
         int index = this.vertical.getIndex(context.mouseX, context.mouseY);
 
+        this.clickedTick.put(context.mouseButton, tick);
+
         if (context.mouseButton == 0)
         {
+            /* morph action time handle has the highest priority */
+            if (this.clickMorphActionTimeHandle(context.mouseX, context.mouseY)) return true;
+
             this.lastClicked = new Selection(tick, index);
             this.lastLeftX = this.lastX;
             this.lastLeftY = this.lastY;
@@ -224,6 +240,7 @@ public class GuiRecordTimeline extends GuiElement
             this.moving = false;
             this.canMove = false;
             this.selectingArea = false;
+            this.movingMorphActionTimeHandle = false;
         }
 
         if (context.mouseButton == 2 && this.area.isInside(context))
@@ -251,6 +268,185 @@ public class GuiRecordTimeline extends GuiElement
         }
 
         return false;
+    }
+
+    /**
+     * Searches if there is a morph action time handle at the given mouse coordinates and whether to select it.
+     * @param mouseX
+     * @param mouseY
+     * @return {tick, index} or null if there was no morph action timeline handle
+     */
+    private List<int[]> getMorphActionHandles(int mouseX, int mouseY)
+    {
+        int tick = this.scroll.getIndex(mouseX, mouseY);
+        int index = this.vertical.getIndex(mouseX, mouseY);
+
+        List<int[]> tickHandles = new ArrayList<>();
+
+        if (tick < 0 || index < 0)
+        {
+            return tickHandles;
+        }
+
+        for (int t = tick; t >= 0; t--)
+        {
+            List<Action> actions = this.panel.record.actions.get(t);
+
+            if (actions != null && index < actions.size() && actions.get(index) instanceof MorphAction)
+            {
+                MorphAction morphAction = (MorphAction) actions.get(index);
+
+                int ticks = this.getAnimationLength(this.getMaxAnimationLengthMorph(morphAction.morph));
+
+                /* this should be the global screen coordinates of the end of the tick item cell*/
+                int test = this.scroll.x - this.scroll.scroll + (tick + 1) * this.scroll.scrollItemSize;
+
+                /* first check if mouse inside the tick of the length -> then check if mouse on pixels of the handle */
+                if ((ticks > 1 && tick == t + ticks - 1) && mouseX >= (test - this.morphActionHandleWidth))
+                {
+                    tickHandles.add(new int[]{t, index});
+                }
+            }
+        }
+
+        return tickHandles;
+    }
+
+
+    private boolean clickMorphActionTimeHandle(int mouseX, int mouseY)
+    {
+        List<int[]> selections = this.getMorphActionHandles(mouseX, mouseY);
+
+        if (selections.isEmpty())
+        {
+            this.selectedTimeHandles.clear();
+            return false;
+        }
+
+        boolean cleared = false;
+
+        for (int[] selection : selections)
+        {
+            int tick = selection[0];
+            int index = selection[1];
+            MorphAction action = (MorphAction) this.panel.record.getAction(tick, index);
+
+            if (GuiScreen.isShiftKeyDown())
+            {
+                this.selectedTimeHandles.add(action);
+            }
+            else if (GuiScreen.isCtrlKeyDown())
+            {
+                if (this.selectedTimeHandles.contains(action)) this.selectedTimeHandles.remove(action);
+                else this.selectedTimeHandles.add(action);
+            }
+            else if (!this.selectedTimeHandles.contains(action))
+            {
+                /* clear only once so multiple overlapping time handles can be selected */
+                if (!cleared)
+                {
+                    this.selectedTimeHandles.clear();
+                    cleared = true;
+                }
+
+                this.selectedTimeHandles.add(action);
+            }
+
+            this.deselect();
+            this.fromTick = tick;
+            this.selectCurrentSaveOld(tick, index);
+            this.preventMouseReleaseSelect = true;
+        }
+
+        this.movingMorphActionTimeHandle = true;
+
+        return true;
+    }
+
+    private void releaseMorphActionTimeHandle(GuiContext context)
+    {
+        List<int[]> selections = this.getMorphActionHandles(context.mouseX, context.mouseY);
+
+        for (int[] selection : selections)
+        {
+            int tick = selection[0];
+            int index = selection[1];
+            MorphAction action = (MorphAction) this.panel.record.getAction(tick, index);
+
+            /* releasing the mouse on a selected time handle means clear selection and select it as the current */
+            if (!(GuiScreen.isShiftKeyDown() || GuiScreen.isCtrlKeyDown()) && this.selectedTimeHandles.contains(action))
+            {
+                this.selectedTimeHandles.clear();
+                this.selectedTimeHandles.add(action);
+                this.deselect();
+                this.fromTick = tick;
+                this.selectCurrentSaveOld(tick, index);
+                this.preventMouseReleaseSelect = true;
+            }
+        }
+
+        if (this.movingMorphActionTimeHandle && this.clickedTick.containsKey(0))
+        {
+            int tick = this.scroll.getIndex(context.mouseX, context.mouseY);
+            int diff = tick - this.clickedTick.get(0);
+
+            if (diff != 0)
+            {
+                for (MorphAction action : this.selectedTimeHandles)
+                {
+                    if (action.morph == null) continue;
+
+                    /* only change the animation length of the morph with maximum duration, as this is what renders slider */
+                    if (GuiScreen.isAltKeyDown())
+                    {
+                        AbstractMorph morph = this.getMaxAnimationLengthMorph(action.morph);
+
+                        if (morph instanceof IAnimationProvider)
+                        {
+                            Animation animation = ((IAnimationProvider) morph).getAnimation();
+
+                            if (animation.animates)
+                            {
+                                animation.duration = Math.max(0, animation.duration + diff);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        /* add the diff onto every morph, even bodyparts etc. */
+                        this.addAnimationDuration(action.morph, diff);
+                    }
+                }
+            }
+        }
+
+        this.movingMorphActionTimeHandle = false;
+    }
+
+    private void addAnimationDuration(AbstractMorph morph, int delta)
+    {
+        if (morph instanceof IAnimationProvider)
+        {
+            Animation animation = ((IAnimationProvider) morph).getAnimation();
+
+            if (animation.animates)
+            {
+                animation.duration = Math.max(0, animation.duration + delta);
+            }
+        }
+
+        if (morph instanceof IBodyPartProvider)
+        {
+            BodyPartManager manager = ((IBodyPartProvider) morph).getBodyPart();
+
+            for (BodyPart part : manager.parts)
+            {
+                if (!part.morph.isEmpty() && part.limb != null && !part.limb.isEmpty())
+                {
+                    this.addAnimationDuration(part.morph.get(), delta);
+                }
+            }
+        }
     }
 
     private void selectMouseClicked(int tick, int index)
@@ -316,6 +512,10 @@ public class GuiRecordTimeline extends GuiElement
     public void mouseReleased(GuiContext context)
     {
         super.mouseReleased(context);
+
+        this.releaseMorphActionTimeHandle(context);
+
+        this.clickedTick.remove(context.mouseButton);
 
         if (context.mouseButton == 0)
         {
@@ -1231,7 +1431,7 @@ public class GuiRecordTimeline extends GuiElement
                             selected = this.isInSelection(i, j);
                         }
 
-                        this.drawAction(action, String.valueOf(j), x, y, selected);
+                        this.drawAction(action, context, String.valueOf(j), x, y, selected);
 
                         j++;
                     }
@@ -1317,7 +1517,7 @@ public class GuiRecordTimeline extends GuiElement
                     {
                         if (this.isInSelection(tick, i))
                         {
-                            this.drawAction(frame.get(i), String.valueOf(i), x, y, true);
+                            this.drawAction(frame.get(i), context, String.valueOf(i), x, y, true);
                         }
 
                         y += this.itemHeight;
@@ -1359,14 +1559,14 @@ public class GuiRecordTimeline extends GuiElement
         this.cursor = -1;
     }
 
-    private void drawAction(Action action, String label, int x, int y, boolean selected)
+    private void drawAction(Action action, GuiContext context, String label, int x, int y, boolean selected)
     {
         int w = this.scroll.scrollItemSize;
         float hue = ((ActionRegistry.getType(action) - 1) / ((float) ActionRegistry.getMaxID()));
         int color = MathHelper.hsvToRGB(hue, 1F, 1F);
         int offset = this.scroll.scrollItemSize < 18 ? (this.scroll.scrollItemSize - this.font.getStringWidth(label)) / 2 : 6;
 
-        this.drawAnimationLength(action, x, y, color, selected);
+        this.drawAnimationLength(action, context, x, y, color, selected);
 
         Gui.drawRect(x, y, x + w, y + this.itemHeight, color + ColorUtils.HALF_BLACK);
         this.font.drawStringWithShadow(label, x + offset, y + 6, 0xffffff);
@@ -1381,46 +1581,37 @@ public class GuiRecordTimeline extends GuiElement
         }
     }
 
-    private void drawAnimationLength(Action action, int x, int y, int color, boolean selected)
+    private void drawAnimationLength(Action action, GuiContext context, int x, int y, int color, boolean selected)
     {
         if (action instanceof MorphAction)
         {
             MorphAction morphAction = (MorphAction) action;
-            int ticks = this.getLength(morphAction.morph);
+            int ticks = this.getAnimationLength(this.getMaxAnimationLengthMorph(morphAction.morph));
+
+            if (this.movingMorphActionTimeHandle && this.selectedTimeHandles.contains(action) && this.clickedTick.containsKey(0))
+            {
+                ticks = Math.max(0, ticks + this.scroll.getIndex(context.mouseX, context.mouseY) - this.clickedTick.get(0));
+            }
 
             if (ticks > 1)
             {
                 ticks -= 1;
 
                 int offset = x + this.scroll.scrollItemSize;
+                boolean timeHandleSelected = this.selectedTimeHandles.contains(action);
 
                 Gui.drawRect(offset, y + 8, offset + ticks * this.scroll.scrollItemSize, y + 12, selected ? 0xffffffff : color + 0x33000000);
-                Gui.drawRect(offset + ticks * this.scroll.scrollItemSize - 1, y, offset + ticks * this.scroll.scrollItemSize, y + this.itemHeight, selected ? 0xffffffff : 0xff000000 + color);
+                Gui.drawRect(offset + ticks * this.scroll.scrollItemSize - this.morphActionHandleWidth, y, offset + ticks * this.scroll.scrollItemSize, y + this.itemHeight,
+                        timeHandleSelected ? 0xffffffff : 0xff000000 + color);
             }
 
             this.adaptiveMaxIndex = Math.max(ticks, this.adaptiveMaxIndex);
         }
     }
 
-    private int getLength(AbstractMorph morph)
+    private AbstractMorph getMaxAnimationLengthMorph(AbstractMorph morph)
     {
-        int ticks = 0;
-
-        if (morph instanceof IAnimationProvider)
-        {
-            Animation animation = ((IAnimationProvider) morph).getAnimation();
-
-            if (animation.animates)
-            {
-                ticks = animation.duration;
-            }
-        }
-        else if (morph instanceof SequencerMorph)
-        {
-            SequencerMorph sequencerMorph = (SequencerMorph) morph;
-
-            ticks = (int) sequencerMorph.getDuration();
-        }
+        int ticks = this.getAnimationLength(morph);
 
         if (morph instanceof IBodyPartProvider)
         {
@@ -1430,12 +1621,40 @@ public class GuiRecordTimeline extends GuiElement
             {
                 if (!part.morph.isEmpty() && part.limb != null && !part.limb.isEmpty())
                 {
-                    ticks = Math.max(ticks, this.getLength(part.morph.get()));
+                    AbstractMorph morph0 = this.getMaxAnimationLengthMorph(part.morph.get());
+                    int ticks0 = this.getAnimationLength(morph0);
+
+                    if (ticks0 > ticks)
+                    {
+                        ticks = ticks0;
+                        morph = morph0;
+                    }
                 }
             }
         }
 
-        return ticks;
+        return morph;
+    }
+
+    private int getAnimationLength(AbstractMorph morph)
+    {
+        if (morph instanceof IAnimationProvider)
+        {
+            Animation animation = ((IAnimationProvider) morph).getAnimation();
+
+            if (animation.animates)
+            {
+                return animation.duration;
+            }
+        }
+        else if (morph instanceof SequencerMorph)
+        {
+            SequencerMorph sequencerMorph = (SequencerMorph) morph;
+
+            return (int) sequencerMorph.getDuration();
+        }
+
+        return 0;
     }
 
     public static class Selection implements ICopy<Selection>
