@@ -362,9 +362,10 @@ public class GuiRecordTimeline extends GuiElement
                 return false;
             });
 
+            this.deselect();
+
             if (actionFound)
             {
-                this.deselect();
                 this.fromTick = tick;
                 this.selectCurrentSaveOld(tick, index);
                 this.preventMouseReleaseSelect = true;
@@ -402,9 +403,10 @@ public class GuiRecordTimeline extends GuiElement
                     return false;
                 });
 
+                this.deselect();
+
                 if (actionFound)
                 {
-                    this.deselect();
                     this.fromTick = tick;
                     this.selectCurrentSaveOld(tick, index);
                     this.preventMouseReleaseSelect = true;
