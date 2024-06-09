@@ -352,10 +352,23 @@ public class GuiRecordTimeline extends GuiElement
                 this.selectedTimeHandles.add(action);
             }
 
-            this.deselect();
-            this.fromTick = tick;
-            this.selectCurrentSaveOld(tick, index);
-            this.preventMouseReleaseSelect = true;
+            boolean actionFound = this.selection.stream().anyMatch((frame) ->
+            {
+                if (frame != null && !frame.isEmpty())
+                {
+                    return frame.stream().anyMatch((actionTest) -> actionTest == action);
+                }
+
+                return false;
+            });
+
+            if (actionFound)
+            {
+                this.deselect();
+                this.fromTick = tick;
+                this.selectCurrentSaveOld(tick, index);
+                this.preventMouseReleaseSelect = true;
+            }
         }
 
         this.movingMorphActionTimeHandle = true;
@@ -378,10 +391,24 @@ public class GuiRecordTimeline extends GuiElement
             {
                 this.selectedTimeHandles.clear();
                 this.selectedTimeHandles.add(action);
-                this.deselect();
-                this.fromTick = tick;
-                this.selectCurrentSaveOld(tick, index);
-                this.preventMouseReleaseSelect = true;
+
+                boolean actionFound = this.selection.stream().anyMatch((frame) ->
+                {
+                    if (frame != null && !frame.isEmpty())
+                    {
+                        return frame.stream().anyMatch((actionTest) -> actionTest == action);
+                    }
+
+                    return false;
+                });
+
+                if (actionFound)
+                {
+                    this.deselect();
+                    this.fromTick = tick;
+                    this.selectCurrentSaveOld(tick, index);
+                    this.preventMouseReleaseSelect = true;
+                }
             }
         }
 
@@ -416,6 +443,9 @@ public class GuiRecordTimeline extends GuiElement
                         /* add the diff onto every morph, even bodyparts etc. */
                         this.addAnimationDuration(action.morph, diff);
                     }
+
+                    int[] found = this.panel.record.findAction(action);
+                    ServerHandlerActionsChange.editAction(action, this.panel.record, found[0], found[1]);
                 }
             }
         }
