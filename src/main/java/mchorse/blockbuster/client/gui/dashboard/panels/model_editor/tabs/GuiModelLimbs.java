@@ -1,5 +1,6 @@
 package mchorse.blockbuster.client.gui.dashboard.panels.model_editor.tabs;
 
+import javax.vecmath.Matrix4d;
 import javax.vecmath.Matrix4f;
 
 import mchorse.blockbuster.api.Model;
@@ -30,10 +31,13 @@ import mchorse.mclib.client.gui.framework.elements.modals.GuiPromptModal;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
+import mchorse.mclib.config.values.ValueBoolean;
 import mchorse.mclib.utils.Color;
 import mchorse.mclib.utils.Interpolations;
+import mchorse.mclib.utils.MatrixUtils;
 import net.minecraft.client.Minecraft;
 
+import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
 
 public class GuiModelLimbs extends GuiModelEditorTab
@@ -466,7 +470,14 @@ public class GuiModelLimbs extends GuiModelEditorTab
     {
         GuiModal.addFullModal(this, () ->
         {
-            GuiListModal modal = new GuiListModal(mc, IKey.lang("blockbuster.gui.me.limbs.parent_limb"), this::parentLimb);
+            GuiToggleElement button = new GuiToggleElement(this.mc, IKey.lang("blockbuster.gui.me.limbs.parent_limb_transform_correction"), true, null);
+            button.tooltip(IKey.lang("blockbuster.gui.me.limbs.parent_limb_transform_correction_tooltip"));
+
+            GuiListModal modal = new GuiListModal(mc, IKey.lang("blockbuster.gui.me.limbs.parent_limb"),
+                    (text) -> this.parentLimb(text, button.isToggled()));
+
+            button.flex().relative(modal.bar).x(10).w(1F, -20).y(-0.25F, -5);
+            modal.add(button);
 
             return modal.addValues(this.panel.model.limbs.keySet()).setValue(this.panel.limb.parent);
         });
@@ -474,9 +485,71 @@ public class GuiModelLimbs extends GuiModelEditorTab
 
     private void parentLimb(String text)
     {
+        this.parentLimb(text, false);
+    }
+
+    private void correctTransformationParenting(String newParent)
+    {
+        ModelCustomRenderer currentLimbRenderer = null;
+        ModelCustomRenderer newParentRenderer = null;
+
+        for (ModelCustomRenderer limbRenderer : this.panel.renderModel.limbs) {
+            if (limbRenderer.limb == this.panel.limb) {
+                currentLimbRenderer = limbRenderer;
+            } else if (limbRenderer.limb.name.equals(newParent)) {
+                newParentRenderer = limbRenderer;
+            }
+        }
+
+        if (currentLimbRenderer == null) return;
+
+        Matrix4d diff = new Matrix4d();
+        diff.setIdentity();
+
+        if (newParentRenderer != null)
+        {
+            diff = newParentRenderer.getWorldTransformation();
+            diff.invert();
+            diff.mul(currentLimbRenderer.getWorldTransformation());
+        }
+        else
+        {
+            diff = this.panel.modelRenderer.getModelMatrix();
+            diff.invert();
+            diff.mul(currentLimbRenderer.getModelView());
+            /**
+             * see {@link ModelCustomRenderer#applyTransform(ModelTransform)}
+             */
+            diff.m13 -= 24 / 16F;
+        }
+
+        MatrixUtils.Transformation correction = MatrixUtils.getTransformation(diff);
+
+        correction.rotation.transpose();
+
+        Vector3f trans = correction.getTranslation3f();
+        Vector3f rot = correction.getRotation(MatrixUtils.RotationOrder.XYZ);
+        Vector3f scale = correction.getScale();
+
+        /* everything is scaled with 1/16 so this is needed to convert normal coordinates into BB coordinates*/
+        trans.scale(16);
+        ModelTransform transform = currentLimbRenderer.model.pose.limbs.get(this.panel.limb.name);
+
+        if (transform != null) {
+            transform.translate = new float[]{trans.x, -trans.y, -trans.z};
+            transform.rotate = new float[]{rot.x, -rot.y, -rot.z};
+            transform.scale = new float[]{scale.x, scale.y, scale.z};
+        }
+    }
+
+    private void parentLimb(String text, boolean correctTransformation)
+    {
         if (!this.panel.limb.name.equals(text))
         {
             this.panel.limb.parent = text;
+
+            if (correctTransformation) this.correctTransformationParenting(text);
+
             this.panel.rebuildModel();
         }
     }

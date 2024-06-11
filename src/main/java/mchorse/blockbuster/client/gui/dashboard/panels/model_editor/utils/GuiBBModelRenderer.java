@@ -34,6 +34,7 @@ import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
+import javax.vecmath.Matrix4d;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3d;
 
@@ -60,6 +61,12 @@ public class GuiBBModelRenderer extends GuiModelRenderer
 
     private ModelPose pose;
     private List<ShapeKey> shapes;
+    private Matrix4d modelMatrix;
+
+    public Matrix4d getModelMatrix()
+    {
+        return new Matrix4d(modelMatrix);
+    }
 
     public static void renderItems(EntityLivingBase entity, ModelCustom model)
     {
@@ -172,6 +179,7 @@ public class GuiBBModelRenderer extends GuiModelRenderer
         GlStateManager.scale(-1.0F * scale, -1.0F * scale, 1.0F * scale);
         GlStateManager.translate(0.0F, -1.501F, 0.0F);
         GlStateManager.rotate(180 + (this.customEntity ? this.entityYawBody : 0), 0, 1, 0);
+        this.modelMatrix = MatrixUtils.readModelViewDouble();
 
         if (this.texture != null)
         {

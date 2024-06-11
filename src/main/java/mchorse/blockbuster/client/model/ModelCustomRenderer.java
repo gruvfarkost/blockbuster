@@ -19,8 +19,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
-import javax.vecmath.Matrix3f;
-import javax.vecmath.Vector3f;
+import javax.vecmath.*;
 
 /**
  * Custom model renderer class
@@ -60,6 +59,8 @@ public class ModelCustomRenderer extends ModelRenderer
 
     public Vector3f min;
     public Vector3f max;
+    private Matrix4d worldTransformation = new Matrix4d();
+    private Matrix4d modelView = new Matrix4d();
 
     public ModelCustomRenderer(ModelCustom model, int texOffX, int texOffY)
     {
@@ -77,6 +78,16 @@ public class ModelCustomRenderer extends ModelRenderer
 
         this.limb = limb;
         this.trasnform = transform;
+    }
+
+    public Matrix4d getWorldTransformation()
+    {
+        return new Matrix4d(this.worldTransformation);
+    }
+
+    public Matrix4d getModelView()
+    {
+        return new Matrix4d(this.modelView);
     }
 
     public void setupStencilRendering(int stencilIndex)
@@ -295,6 +306,18 @@ public class ModelCustomRenderer extends ModelRenderer
             }
         }
     }
+
+    private void cacheMatrix(Matrix4d target)
+    {
+        try
+        {
+            Matrix4d parent = MatrixUtils.getCameraMatrix();
+            parent.invert();
+            parent.mul(parent, MatrixUtils.readModelViewDouble());
+            target.set(parent);
+        } catch (SingularMatrixException var9) {
+        }
+    }
     
     public void updateObbs()
     {
@@ -431,6 +454,9 @@ public class ModelCustomRenderer extends ModelRenderer
 
     protected void renderRenderer()
     {
+        this.cacheMatrix(this.worldTransformation);
+        this.modelView = MatrixUtils.readModelViewDouble();
+
         if (this.limb.opacity <= 0 || this.trasnform instanceof LimbProperties && ((LimbProperties) this.trasnform).color.a <= 0)
         {
             return;
