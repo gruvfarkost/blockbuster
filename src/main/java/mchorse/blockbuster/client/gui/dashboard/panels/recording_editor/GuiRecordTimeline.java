@@ -63,7 +63,13 @@ public class GuiRecordTimeline extends GuiElement
     public boolean lastDragging = false;
     public int lastX;
     public int lastY;
+    /**
+     * Last clicked x coordinate with mouse button 0
+     */
     private int lastLeftX;
+    /**
+     * Last clicked y coordinate with mouse button 0
+     */
     private int lastLeftY;
     public int lastH;
     public int lastV;
@@ -223,11 +229,14 @@ public class GuiRecordTimeline extends GuiElement
         if (context.mouseButton == 0)
         {
             /* morph action time handle has the highest priority */
-            if (this.clickMorphActionTimeHandle(context.mouseX, context.mouseY)) return true;
+            boolean abort = false;
+            if (this.clickMorphActionTimeHandle(context.mouseX, context.mouseY)) abort = true;
 
             this.lastClicked = new Selection(tick, index);
             this.lastLeftX = this.lastX;
             this.lastLeftY = this.lastY;
+
+            if (abort) return true;
         }
 
         if (context.mouseButton == 1)
@@ -312,6 +321,44 @@ public class GuiRecordTimeline extends GuiElement
         return tickHandles;
     }
 
+    private List<int[]> getMorphActionHandlesRange(int fromTick, int toTick, int fromIndex, int toIndex)
+    {
+        if (fromTick < 0 || toTick < 0 || fromIndex < 0 || toIndex < 0)
+        {
+            return new ArrayList<>();
+        }
+
+        int tick0 = Math.min(fromTick, toTick);
+        int tick1 = Math.max(fromTick, toTick);
+        int index0 = Math.min(fromIndex, toIndex);
+        int index1 = Math.max(fromIndex, toIndex);
+        List<int[]> tickHandles = new ArrayList<>();
+
+        for (int t = tick1; t >= 0; t--)
+        {
+            List<Action> actions = this.panel.record.actions.get(t);
+
+            if (actions == null || actions.isEmpty()) continue;
+
+            for (int i = index0; i < actions.size() && i <= index1; i++)
+            {
+                if (!(actions.get(i) instanceof MorphAction)) continue;
+
+                int ticks = this.getAnimationLength(this.getMaxAnimationLengthMorph(((MorphAction) actions.get(i)).morph));
+
+                if (ticks <= 1) continue;
+                int animationEndTick = t + ticks - 1;
+
+                if (animationEndTick >= tick0 && animationEndTick <= tick1)
+                {
+                    tickHandles.add(new int[]{t, i});
+                }
+            }
+        }
+
+        return tickHandles;
+    }
+
 
     private boolean clickMorphActionTimeHandle(int mouseX, int mouseY)
     {
@@ -324,6 +371,17 @@ public class GuiRecordTimeline extends GuiElement
         }
 
         boolean cleared = false;
+
+        List<int[]> lastClickedSelection = this.getMorphActionHandles(this.lastLeftX, this.lastLeftY);
+
+        /* if user clicked on time handles before and now clicks on new time handles with shift -> select a range */
+        if (GuiScreen.isShiftKeyDown() && !lastClickedSelection.isEmpty())
+        {
+            int tick = this.scroll.getIndex(mouseX, mouseY);
+            int index = this.vertical.getIndex(mouseX, mouseY);
+
+            selections = this.getMorphActionHandlesRange(tick, this.lastClicked.tick, index, this.lastClicked.index);
+        }
 
         for (int[] selection : selections)
         {
@@ -364,6 +422,10 @@ public class GuiRecordTimeline extends GuiElement
 
             this.deselect();
 
+            /*
+             * only select the action of the time handle if it was already selected
+             * otherwise clicking on time handles will always open the action menu and might annoy the user
+             */
             if (actionFound)
             {
                 this.fromTick = tick;
