@@ -13,10 +13,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Command /model clear
@@ -65,7 +62,8 @@ public class SubCommandModelClear extends BBCommandBase
                 ITextureObject texture = entry.getValue();
                 String domain = key.getResourceDomain();
 
-                boolean bbDomain = domain.equals("b.a") || domain.equals("http") || domain.equals("https");
+                List<String> domains = Arrays.asList("c.s", "s&b", "b.a", "http", "https");
+                boolean bbDomain = domains.contains(domain);
 
                 if (bbDomain && key.getResourcePath().startsWith(prefix) && texture instanceof AbstractTexture)
                 {
