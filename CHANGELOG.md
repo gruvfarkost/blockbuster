@@ -14,6 +14,7 @@ This update was made by Chryfi, exceptions are mentioned at the respective items
 	* When pressing ALT when dragging the animation handles, the change of the animation duration will only be applied to the morph with the longest animation duration, which is the morph that renders the animation handle in the timeline.
 * Added an option to the model editor when parenting, to fix the pose position of the limb in such a way that the limb stays in its place when changing its parent
 * Added permission system prototype (currently only has blockbuster.model_block.edit and blockbuster.scenes.open permissions for plugin servers)
+* Added Chameleon and S&B texture domains to /model clear command
 * Added new Bedrock materials to snowstorm (thanks to @l89669)
 * Added support for materials to snowstorm (thanks to @l89669)
 * Added pause button to snowstorm GUI (thanks to @l89669)
