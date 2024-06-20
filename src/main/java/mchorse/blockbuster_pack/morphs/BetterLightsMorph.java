@@ -10,10 +10,9 @@ import mchorse.blockbuster.Blockbuster;
 import mchorse.blockbuster.client.RenderingHandler;
 import mchorse.blockbuster.client.render.tileentity.TileEntityGunItemStackRenderer;
 import mchorse.blockbuster.client.render.tileentity.TileEntityModelItemStackRenderer;
-import mchorse.blockbuster.common.entity.BetterLightsDummyEntity;
-import mchorse.blockbuster.common.entity.ExpirableDummyEntity;
 import mchorse.blockbuster.events.TickHandler;
 import mchorse.blockbuster.utils.ExpirableRunnable;
+import mchorse.blockbuster_pack.trackers.ApertureCamera;
 import mchorse.mclib.client.gui.framework.elements.GuiModelRenderer;
 import mchorse.mclib.client.render.VertexBuilder;
 import mchorse.mclib.config.values.*;
@@ -227,7 +226,11 @@ public class BetterLightsMorph extends BetterLightsMorphTemplate implements IAni
     @Override
     @Optional.Method(modid = BetterLightsConstants.ID)
     public void render(EntityLivingBase entity, double x, double y, double z, float entityYaw, float partialTicks) {
-        if (OptifineHelper.isOptifineShadowPass())
+        /*
+         * ApertureCamera is the tracker modifier and it
+         * renders morphs again which causes transformations to be messed up
+         */
+        if (OptifineHelper.isOptifineShadowPass() || ApertureCamera.enable)
         {
             return;
         }
