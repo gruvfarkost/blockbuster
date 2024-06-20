@@ -12,6 +12,8 @@ import mchorse.blockbuster.client.render.tileentity.TileEntityGunItemStackRender
 import mchorse.blockbuster.client.render.tileentity.TileEntityModelItemStackRenderer;
 import mchorse.blockbuster.common.entity.BetterLightsDummyEntity;
 import mchorse.blockbuster.common.entity.ExpirableDummyEntity;
+import mchorse.blockbuster.events.TickHandler;
+import mchorse.blockbuster.utils.ExpirableRunnable;
 import mchorse.mclib.client.gui.framework.elements.GuiModelRenderer;
 import mchorse.mclib.client.render.VertexBuilder;
 import mchorse.mclib.config.values.*;
@@ -31,7 +33,9 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
@@ -47,7 +51,7 @@ import java.util.function.Consumer;
 import static dz.betterlights.utils.ConfigProperty.EnumPropertyType.COLOR_PICKER;
 
 public class BetterLightsMorph extends BetterLightsMorphTemplate implements IAnimationProvider, ISyncableMorph, IMorphGenerator {
-    private ExpirableDummyEntity dummy;
+    private BetterLightsRunnable dummy;
     /**
      * Cast this to LightCaster
      * Type is Object as the BetterLights dependency is optional.
@@ -160,7 +164,7 @@ public class BetterLightsMorph extends BetterLightsMorphTemplate implements IAni
     @Optional.Method(modid = BetterLightsConstants.ID)
     protected void createDummyEntitiy(@Nullable EntityLivingBase target)
     {
-        if ((this.dummy == null || this.dummy.isDead) && this.isMorphEnabled())
+        if ((this.dummy == null || this.dummy.shouldRemove()) && this.isMorphEnabled())
         {
             /*
              * if the rendered position is 0, it is likely that the morph has not been rendered yet
@@ -173,9 +177,8 @@ public class BetterLightsMorph extends BetterLightsMorphTemplate implements IAni
                 this.prevPosition.set(target.posX, target.posY, target.posZ);
             }
 
-            this.dummy = new BetterLightsDummyEntity(Minecraft.getMinecraft().world, this.getLightcaster(), 0);
+            this.dummy = new BetterLightsRunnable(Minecraft.getMinecraft().world, this.getLightcaster(), 0);
 
-            this.updateDummyEntityPosition();
             this.updateLightcaster();
             this.addToWorld();
         }
@@ -185,20 +188,8 @@ public class BetterLightsMorph extends BetterLightsMorphTemplate implements IAni
     @SideOnly(Side.CLIENT)
     @Optional.Method(modid = BetterLightsConstants.ID)
     protected void addToWorld() {
-        Minecraft.getMinecraft().world.addEntityToWorld(this.dummy.getEntityId(), this.dummy);
+        Blockbuster.proxy.tickHandler.addRunnable(TickHandler.WorldClientTickEvent.class, Side.CLIENT, TickEvent.Phase.START, this.dummy);
         BetterLightsMod.getLightManager().addTemporaryLightCaster(Minecraft.getMinecraft().world, this.getLightcaster(), false);
-    }
-
-    private void updateDummyEntityPosition()
-    {
-        this.dummy.prevPosX = this.prevPosition.x;
-        this.dummy.prevPosY = this.prevPosition.y;
-        this.dummy.prevPosZ = this.prevPosition.z;
-        this.dummy.lastTickPosX = this.prevPosition.x;
-        this.dummy.lastTickPosY = this.prevPosition.y;
-        this.dummy.lastTickPosZ = this.prevPosition.z;
-
-        this.dummy.setPosition(this.position.x, this.position.y, this.position.z);
     }
 
     @Override
@@ -293,11 +284,6 @@ public class BetterLightsMorph extends BetterLightsMorphTemplate implements IAni
         if (GuiModelRenderer.isRendering() && this.isMorphEnabled()) {
             this.createDummyEntitiy(entity);
             this.dummy.setLifetime(this.dummy.getAge() + 2);
-        }
-
-        if (this.dummy != null && this.isMorphEnabled())
-        {
-            this.updateDummyEntityPosition();
         }
 
         this.updateLightcaster();
@@ -942,6 +928,34 @@ public class BetterLightsMorph extends BetterLightsMorphTemplate implements IAni
                 {
                     e.printStackTrace();
                 }
+            }
+        }
+    }
+
+    public static class BetterLightsRunnable extends ExpirableRunnable
+    {
+        private final Object lightcaster;
+        private final World world;
+
+        public BetterLightsRunnable(World world, Object lightCaster, int lifetime)
+        {
+            super(lifetime);
+
+            this.lightcaster = lightCaster;
+            this.world = world;
+        }
+
+        @Override
+        @Optional.Method(modid = BetterLightsConstants.ID)
+        public void run()
+        {
+            super.run();
+
+            if (this.lightcaster == null) return;
+
+            if (this.shouldRemove())
+            {
+                BetterLightsMod.getLightManager().removeLightCaster(this.world, (LightCaster) this.lightcaster, false);
             }
         }
     }
