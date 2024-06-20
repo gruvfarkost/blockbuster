@@ -26,6 +26,7 @@ import mchorse.blockbuster.common.tileentity.TileEntityDirector;
 import mchorse.blockbuster.common.tileentity.TileEntityModel;
 import mchorse.blockbuster.events.GunShootHandler;
 import mchorse.blockbuster.events.PlayerHandler;
+import mchorse.blockbuster.events.TickHandler;
 import mchorse.blockbuster.network.Dispatcher;
 import mchorse.blockbuster.recording.RecordManager;
 import mchorse.blockbuster.recording.capturing.ActionHandler;
@@ -107,6 +108,7 @@ public class CommonProxy
     public BlockbusterFactory factory;
 
     public static File configFile;
+    public final TickHandler tickHandler = new TickHandler();
 
     /**
      * Registers network messages (and their handlers), items, blocks, director
@@ -198,6 +200,7 @@ public class CommonProxy
         MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
         MinecraftForge.EVENT_BUS.register(new MetamorphHandler());
         MinecraftForge.EVENT_BUS.register(new PlayerHandler());
+        MinecraftForge.EVENT_BUS.register(this.tickHandler);
     }
 
     /**
