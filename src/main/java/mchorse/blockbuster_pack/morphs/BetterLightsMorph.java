@@ -37,6 +37,7 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.joml.Matrix3d;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
@@ -68,7 +69,8 @@ public class BetterLightsMorph extends BetterLightsMorphTemplate implements IAni
     private boolean renderedItemGui = false;
     private boolean enableAlways = false;
     /**
-     * Animation and stuff - is set to the lightcaster
+     * The values influenced by animation and other dynamic stuff.
+     * These are the final values that are set to the {@link #lightCaster}
      */
     private final BetterLightsProperties properties = new BetterLightsProperties();
     private BetterLightsAnimation animation = new BetterLightsAnimation();
@@ -306,17 +308,41 @@ public class BetterLightsMorph extends BetterLightsMorphTemplate implements IAni
     {
         float outerRadius = this.getLightcaster().getDistance() * (float) Math.tan(Math.toRadians(this.getLightcaster().getOuterAngle()));
         float innerRadius = Math.min(outerRadius, this.getLightcaster().getDistance() * (float) Math.tan(Math.toRadians(this.getLightcaster().getInnerAngle())));
-        Vector3d direction = new Vector3d(0, 0, this.getLightcaster().getDistance());
+        /*
+         * can't retrieve the direction value from the lightcaster instance, as those are transformed by the morph's rotation
+         * and therefore not suitable for getting the rotation for rendering a cone in the UI
+         */
+        GenericNumberValue<?> x = (GenericNumberValue<?>) this.properties.values.getValue("DirectionX")
+                .flatMap((v) -> java.util.Optional.ofNullable(v instanceof GenericNumberValue<?> ? v : null))
+                .orElse((GenericBaseValue) new ValueDouble("", 0));
+        GenericNumberValue<?> y = (GenericNumberValue<?>) this.properties.values.getValue("DirectionY")
+                .flatMap((v) -> java.util.Optional.ofNullable(v instanceof GenericNumberValue<?> ? v : null))
+                .orElse((GenericBaseValue) new ValueDouble("", 0));
+        GenericNumberValue<?> z = (GenericNumberValue<?>) this.properties.values.getValue("DirectionZ")
+                .flatMap((v) -> java.util.Optional.ofNullable(v instanceof GenericNumberValue<?> ? v : null))
+                .orElse((GenericBaseValue) new ValueDouble("", 1));
+
+        org.joml.Vector3d direction = new org.joml.Vector3d(x.get().doubleValue(), y.get().doubleValue(), z.get().doubleValue());
+        Vector3d directionNorm = new Vector3d(0, 0, this.getLightcaster().getDistance());
+        org.joml.Vector3d rot = new Matrix3d().rotateTowards(direction, new org.joml.Vector3d(0, 0,1))
+                .getEulerAnglesXYZ(new org.joml.Vector3d());
         Color color = new Color(this.getLightcaster().getColor().x, this.getLightcaster().getColor().y, this.getLightcaster().getColor().z);
+
+        GlStateManager.pushMatrix();
+        GlStateManager.rotate((float) Math.toDegrees(rot.x), 1, 0, 0);
+        GlStateManager.rotate((float) Math.toDegrees(rot.y), 0, 1, 0);
+        GlStateManager.rotate((float) Math.toDegrees(rot.z), 0, 0, 1);
+
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
         GlStateManager.disableLighting();
         GlStateManager.disableTexture2D();
         if (GuiModelRenderer.isRendering()) GlStateManager.disableDepth();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+
         BufferBuilder builder = Tessellator.getInstance().getBuffer();
 
-        RenderingUtils.renderCircle(direction, direction, outerRadius, 32, color, lineThickness);
-        RenderingUtils.renderCircleDotted(direction, direction, innerRadius, 32, color, lineThickness, 1);
+        RenderingUtils.renderCircle(directionNorm, directionNorm, outerRadius, 32, color, lineThickness);
+        RenderingUtils.renderCircleDotted(directionNorm, directionNorm, innerRadius, 32, color, lineThickness, 1);
 
         builder.begin(GL11.GL_LINE_STRIP, VertexBuilder.getFormat(true, false, false, false));
         GL11.glLineWidth(lineThickness);
@@ -335,6 +361,8 @@ public class BetterLightsMorph extends BetterLightsMorphTemplate implements IAni
 
         Tessellator.getInstance().draw();
         GlStateManager.enableTexture2D();
+        GlStateManager.popMatrix();
+
         if (GuiModelRenderer.isRendering()) GlStateManager.enableDepth();
     }
 
@@ -626,6 +654,9 @@ public class BetterLightsMorph extends BetterLightsMorphTemplate implements IAni
             catch (Exception e) { }
         }
 
+        /**
+         * Generate the {@link #valueTree} from the LightCaster class.
+         */
         @Optional.Method(modid = BetterLightsConstants.ID)
         private static void generate()
         {
