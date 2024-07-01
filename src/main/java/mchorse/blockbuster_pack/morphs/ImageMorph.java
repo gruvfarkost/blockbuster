@@ -404,13 +404,13 @@ public class ImageMorph extends AbstractMorph implements IAnimationProvider, ISy
             GlStateManager.matrixMode(GL11.GL_MODELVIEW);
         }
 
-        buffer.begin(GL11.GL_QUADS, VertexBuilder.getFormat(true, true, false, true));
-
-        Color color = this.image.color;
-
-        /* By default the pos is (0.5, -0.5, -0.5, 0.5)  */
-
         if (!this.thickness) {
+            buffer.begin(GL11.GL_QUADS, VertexBuilder.getFormat(true, true, false, true));
+
+            Color color = this.image.color;
+
+            /* By default the pos is (0.5, -0.5, -0.5, 0.5)  */
+
             /* Frontface */
             buffer.pos(pos.x, pos.z, 0.0F).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.z).normal(0.0F, 0.0F, 1.0F).endVertex();
             buffer.pos(pos.x, pos.w, 0.0F).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.w).normal(0.0F, 0.0F, 1.0F).endVertex();
@@ -422,6 +422,8 @@ public class ImageMorph extends AbstractMorph implements IAnimationProvider, ISy
             buffer.pos(pos.y, pos.z, 0.0F).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.z).normal(0.0F, 0.0F, -1.0F).endVertex();
             buffer.pos(pos.y, pos.w, 0.0F).color(color.r, color.g, color.b, color.a).tex(uv.y, uv.w).normal(0.0F, 0.0F, -1.0F).endVertex();
             buffer.pos(pos.x, pos.w, 0.0F).color(color.r, color.g, color.b, color.a).tex(uv.x, uv.w).normal(0.0F, 0.0F, -1.0F).endVertex();
+
+            tessellator.draw();
         }
         else
         {
@@ -433,8 +435,6 @@ public class ImageMorph extends AbstractMorph implements IAnimationProvider, ISy
                 extrusion.render();
             }
         }
-
-        tessellator.draw();
 
         if (textureMatrix)
         {
