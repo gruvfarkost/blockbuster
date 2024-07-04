@@ -83,6 +83,7 @@ public class GuiBetterLightsMorph extends GuiAbstractMorph<BetterLightsMorph>
             this.animation.interpolations.removeFromParent();
             this.enableAlways = new GuiToggleElement(mc, IKey.lang("blockbuster.gui.betterlights_morph.enable_always"),
                     (b) -> this.morph.setEnableAlways(b.isToggled()));
+            this.enableAlways.tooltip(IKey.lang("blockbuster.gui.betterlights_morph.enable_always_tooltip"));
 
             GuiElement left = new GuiElement(mc);
             left.flex().relative(this)
